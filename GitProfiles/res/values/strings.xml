@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">GitProfiles</string>
+    <string name="blank"></string>
+    
+    <!-- main profile page strings -->
+    <string name="mainp_default">NA</string>
+    
+    <!-- prompt string -->
+    <string name="prompt_enter_profile_hint">Profile&#8230;</string>
+    <string name="prompt_view_profile">View Profile</string>
+    
+    
+</resources>

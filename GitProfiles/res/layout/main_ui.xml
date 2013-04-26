@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <fragment
+        android:id="@+id/prompt_fragment"
+        android:name="com.cdietz.gitprofiles.PromptFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="PromptFragment" />
+
+    <fragment
+        android:id="@+id/main_profile_fragment"
+        android:name="com.cdietz.gitprofiles.MainProfileFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="MainProfileFragment" />
+
+    <fragment
+        android:id="@+id/events_list_fragment"
+        android:name="com.cdietz.gitprofiles.EventsListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:tag="EventsListFragment" />
+
+</LinearLayout>

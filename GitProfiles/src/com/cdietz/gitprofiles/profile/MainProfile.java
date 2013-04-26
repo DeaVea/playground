@@ -96,13 +96,7 @@ public class MainProfile {
         boolean missingElement = false;
         try{
             object = new JSONObject(candidate);
-            for(int i = 0; i < JSON_ELEMENT_ARRAY.length; i++) {
-                missingElement |= !object.has(JSON_ELEMENT_ARRAY[i]);
-            }
         } catch (JSONException e) {
-            object = null;
-        }
-        if(missingElement) {
             object = null;
         }
         return object;

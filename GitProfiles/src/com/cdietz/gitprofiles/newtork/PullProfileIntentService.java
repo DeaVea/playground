@@ -2,6 +2,7 @@ package com.cdietz.gitprofiles.newtork;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +47,8 @@ public class PullProfileIntentService extends PullIntentService {
 
         try {
             final HttpsURLConnection connection = openInputConnection(fullUrlString, "application/json");
-            final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            final InputStream is = connection.getInputStream();
+            final BufferedReader in = new BufferedReader(new InputStreamReader(is));
 
             // TODO: Check response codes.
             final StringBuilder builder = new StringBuilder();
@@ -58,12 +60,12 @@ public class PullProfileIntentService extends PullIntentService {
             final String result = builder.toString();
             
             final JSONObject root = MainProfile.validate(result);
-//            if(root == null) {
+            if(root != null) {
                 final MainProfile mp = new MainProfile(root);
                 broadcastNewMainProfile(mp);
-//            } else {
-//                broadcastNoProfileFound();
-//            }
+            } else {
+                broadcastNoProfileFound();
+            }
             
         } catch (MalformedURLException e) {
             // TODO: URL was bad meaning profile was bad.

@@ -18,6 +18,13 @@
         android:layout_height="wrap_content"
         android:tag="MainProfileFragment" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_activity"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <fragment
         android:id="@+id/events_list_fragment"
         android:name="com.cdietz.gitprofiles.EventsListFragment"

@@ -9,14 +9,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/blank"
+        android:padding="10dp"
+        android:background="@android:color/white"
         android:src="@drawable/default_pic" />
 
     <TextView
         android:id="@+id/mainp_real_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/mainp_profile_pic"
-        android:text="@string/mainp_default" />
+        android:text="@string/mainp_default_real_name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/mainp_user_name"
@@ -24,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/mainp_real_name"
         android:layout_below="@+id/mainp_real_name"
-        android:text="@string/mainp_default" />
+        android:text="@string/mainp_default_user_name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/mainp_html_url"
@@ -33,13 +38,20 @@
         android:layout_alignLeft="@+id/mainp_real_name"
         android:layout_below="@+id/mainp_user_name"
         android:autoLink="web"
-        android:text="@string/mainp_default" />
+        android:text="@string/mainp_default_url" />
+
+    <TextView
+        android:id="@+id/mainp_bio_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mainp_profile_pic"
+        android:text="@string/mainp_biography" />
 
     <TextView
         android:id="@+id/mainp_bio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mainp_profile_pic"
+        android:layout_below="@+id/mainp_bio_title"
         android:text="@string/mainp_default" />
 
 </RelativeLayout>

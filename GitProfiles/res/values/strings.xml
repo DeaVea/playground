@@ -3,8 +3,15 @@
     <string name="app_name">GitProfiles</string>
     <string name="blank"></string>
     
+    <!-- main page strings -->
+    <string name="recent_activity">Recent Public Activity</string>
+    
     <!-- main profile page strings -->
     <string name="mainp_default">NA</string>
+    <string name="mainp_default_real_name">Real Name:</string>
+    <string name="mainp_default_user_name">User Name:</string>
+    <string name="mainp_default_url">Website:</string>
+    <string name="mainp_biography">Bio:</string>
     
     <!-- prompt string -->
     <string name="prompt_enter_profile_hint">Profile&#8230;</string>

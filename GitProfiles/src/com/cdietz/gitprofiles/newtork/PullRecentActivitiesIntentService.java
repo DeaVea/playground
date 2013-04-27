@@ -31,6 +31,32 @@ public class PullRecentActivitiesIntentService extends PullIntentService {
         super(TAG);
     }
 
+    private Bundle downloadPage(String baseUrl, int page) throws MalformedURLException, IOException, JSONException {
+        final String urlString = baseUrl + "?page=" + page;
+        HttpsURLConnection connection;
+        connection = openInputConnection(urlString, "application/json");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                connection.getInputStream()));
+
+        final StringBuilder builder = new StringBuilder();
+        String line;
+         while ((line = in.readLine()) != null) {
+             builder.append(line);
+         }
+
+         final String result = builder.toString();
+         final JSONArray activities = new JSONArray(result);
+         final int count = activities.length();
+         final Bundle eventList = new Bundle();
+         Event newEvent;
+         for(int i = 0; i < count; i++) {
+             newEvent = new Event(activities.getJSONObject(i));
+             eventList.putBundle(String.valueOf(i), newEvent.toBundle());
+         }
+         return eventList;
+    }
+    
     @Override
     protected void onHandleIntent(Intent intent) {
         final Bundle extras = intent.getExtras();
@@ -43,32 +69,15 @@ public class PullRecentActivitiesIntentService extends PullIntentService {
 
         final String urlString = ACTIVITY_LIST_URL.replace("UNAME", userName);
         
-        HttpsURLConnection connection;
+        // The Github API does not all more than 10 pages worth of activities.
+        // Once you run out of pages, you just get empty JSON arrays.
+        int page = 1;
+        Bundle eventList;
         try {
-            connection = openInputConnection(urlString, "application/json");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-
-            // TODO: Check response codes.
-            final StringBuilder builder = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                builder.append(line);
-            }
-
-            final String result = builder.toString();
-            final JSONArray activities = new JSONArray(result);
-            final int count = activities.length();
-            final Bundle eventList = new Bundle();
-            Event newEvent;
-            for(int i = 0; i < count; i++) {
-                newEvent = new Event(activities.getJSONObject(i));
-                eventList.putBundle(String.valueOf(i), newEvent.toBundle());
-            }
-            
-            broadcastNewEvents(eventList);
-            
+            do {
+                eventList = downloadPage(urlString, page);
+                broadcastNewEvents(eventList);
+            } while (eventList.size() > 0 && page++ <= 10);
         } catch (MalformedURLException e) {
             // TODO url was bad
         } catch (IOException e) {

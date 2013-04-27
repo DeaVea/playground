@@ -2,8 +2,6 @@ package com.cdietz.gitprofiles;
 
 import java.io.File;
 
-import org.json.JSONException;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +54,7 @@ public class GitProfilesActivity extends FragmentActivity implements PromptListe
     
     private void updateNewProfile(MainProfile mp) {
         ((MainProfileFragment) getSupportFragmentManager().findFragmentByTag(MainProfileFragment.TAG)).setProfile(mp);
+        mEA.clear();
     }
     
     private void downloadPicture(MainProfile mp) {

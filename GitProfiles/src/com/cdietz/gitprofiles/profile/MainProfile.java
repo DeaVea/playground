@@ -93,7 +93,6 @@ public class MainProfile {
      */
     public static JSONObject validate(String candidate) {
         JSONObject object;
-        boolean missingElement = false;
         try{
             object = new JSONObject(candidate);
         } catch (JSONException e) {

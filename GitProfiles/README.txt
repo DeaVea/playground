@@ -1,5 +1,5 @@
 Known issues:
-The image resizes when teh keyboard pops up.
+The image resizes when the keyboard pops up.
 The error received with invalid inputs is always "Unable to connect to the server."
 
 Future possible enhancements:

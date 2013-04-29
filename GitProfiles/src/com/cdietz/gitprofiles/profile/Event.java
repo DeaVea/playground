@@ -5,7 +5,14 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 
-public class Event {
+/**
+ * An "event" is an activity listed on the user's profile.
+ * There are many types, each with there own parameters. The most general
+ * are listed here, but on the event they do not exist, the default string will be provided
+ * @author Christopher Dietz
+ *
+ */
+public class Event implements ProfileElement {
 
     public static final String ARG_JSON_TYPE = "type";
     public static final String ARG_JSON_PUBLIC = "public";
@@ -53,6 +60,7 @@ public class Event {
         mOrg = new Org(object.getBundle(ARG_JSON_ORG));
     }
     
+    @Override
     public Bundle toBundle() {
         final Bundle bundle = new Bundle();
         bundle.putString(ARG_JSON_TYPE, mType);
@@ -63,7 +71,7 @@ public class Event {
             bundle.putBundle(ARG_JSON_PAYLOAD, mPayload.toBundle());
         }
         if(mRepo != null) {
-        bundle.putBundle(ARG_JSON_REPO, mRepo.toBundle());
+            bundle.putBundle(ARG_JSON_REPO, mRepo.toBundle());
         }
         if(mActor != null) {
             bundle.putBundle(ARG_JSON_ACTOR, mActor.toBundle());
@@ -74,10 +82,33 @@ public class Event {
         return bundle;
     }
     
+    @Override
+    public JSONObject toJson() throws JSONException {
+        final JSONObject root = new JSONObject();
+        root.put(ARG_JSON_TYPE, mType)
+        .put(ARG_JSON_PUBLIC, mPublic)
+        .put(ARG_JSON_CREATED_AT, mCreatedAt)
+        .put(ARG_JSON_ID, mId);
+        
+        if(mPayload != null) {
+            root.put(ARG_JSON_PAYLOAD, mPayload.toJson());
+        }
+        if(mRepo != null) {
+            root.put(ARG_JSON_REPO, mRepo.toJson());
+        }
+        if(mActor != null) {
+            root.put(ARG_JSON_ACTOR, mActor.toJson());
+        }
+        if(mOrg != null) {
+            root.put(ARG_JSON_ORG, mOrg.toJson());
+        }
+        return root;
+    }
+    
     /**
      * A payload is unique to the type of event, so a standard event has nothing at its base.
      */
-    public static class Payload {
+    public static class Payload implements ProfileElement {
         public static final String FULL_JSON_DATA = "fulldata";
         
         public final JSONObject mFullJSONData;
@@ -91,19 +122,25 @@ public class Event {
             try {
                 test = new JSONObject(bundle.getString(FULL_JSON_DATA));
             } catch (JSONException e) {
-                test = null;
+                test = new JSONObject();
             }
            mFullJSONData = test;
         }
         
+        @Override
         public Bundle toBundle() {
             final Bundle bundle = new Bundle();
             bundle.putString(FULL_JSON_DATA, mFullJSONData.toString());
             return bundle;
         }
+
+        @Override
+        public JSONObject toJson() {
+            return mFullJSONData;
+        }
     }
     
-    public static class Repo {
+    public static class Repo implements ProfileElement {
         public static final String ARG_JSON_ID = "id";
         public static final String ARG_JSON_NAME = "name";
         public static final String ARG_JSON_URL = "url";
@@ -124,6 +161,7 @@ public class Event {
             mUrl = ParseTools.getStringOrDefault(repoObject, ARG_JSON_URL, "NA");
         }
         
+        @Override
         public Bundle toBundle() {
             final Bundle bundle = new Bundle();
             if(mId != null) {
@@ -133,9 +171,17 @@ public class Event {
             bundle.putString(ARG_JSON_URL, mUrl);
             return bundle;
         }
+
+        @Override
+        public JSONObject toJson() throws JSONException {
+            final JSONObject root = new JSONObject();
+            root.put(ARG_JSON_NAME, mName)
+            .put(ARG_JSON_URL, mUrl);
+            return root;
+        }
     }
     
-    public static class Actor {
+    public static class Actor implements ProfileElement {
         public static final String ARG_JSON_LOGIN = "login";
         public static final String ARG_JSON_ID = "id";
         public static final String ARG_JSON_AVATAR_URL = "avatar_url";
@@ -164,6 +210,7 @@ public class Event {
             mUrl = ParseTools.getStringOrDefault(actorObject, ARG_JSON_URL, "NA");
         }
         
+        @Override
         public Bundle toBundle() {
             Bundle bundle = new Bundle();
             bundle.putString(ARG_JSON_LOGIN, mLogin);
@@ -173,9 +220,21 @@ public class Event {
             bundle.putString(ARG_JSON_URL, mUrl);
             return bundle;
         }
+
+        @Override
+        public JSONObject toJson() throws JSONException {
+            final JSONObject root = new JSONObject();
+            root.put(ARG_JSON_LOGIN, mLogin)
+            .put(ARG_JSON_ID, mId)
+            .put(ARG_JSON_AVATAR_URL, mAvatarUrl)
+            .put(ARG_JSON_GRAVATAR_ID, mGravatarId)
+            .put(ARG_JSON_URL, mUrl);
+            
+            return root;
+        }
     }
     
-    public static class Org {
+    public static class Org implements ProfileElement {
         public static final String ARG_JSON_LOGIN = "login";
         public static final String ARG_JSON_ID = "id";
         public static final String ARG_JSON_AVATAR_URL = "avatar_url";
@@ -204,6 +263,7 @@ public class Event {
             mUrl = ParseTools.getStringOrDefault(orgObject, ARG_JSON_URL, "NA");
         }
         
+        @Override
         public Bundle toBundle() {
             final Bundle bundle = new Bundle();
             bundle.putString(ARG_JSON_LOGIN, mLogin);
@@ -212,6 +272,18 @@ public class Event {
             bundle.putString(ARG_JSON_GRAVATAR_ID, mGravatarId);
             bundle.putString(ARG_JSON_URL, mUrl);
             return bundle;
+        }
+
+        @Override
+        public JSONObject toJson() throws JSONException {
+            final JSONObject root = new JSONObject();
+            root.put(ARG_JSON_LOGIN, mLogin)
+            .put(ARG_JSON_ID, mId)
+            .put(ARG_JSON_AVATAR_URL, mAvatarUrl)
+            .put(ARG_JSON_GRAVATAR_ID, mGravatarId)
+            .put(ARG_JSON_URL, mUrl);
+            
+            return root;
         }
     }
 }

@@ -27,10 +27,19 @@ public class PullProfilePictureIntentService extends PullIntentService {
     public static final String TAG = PullProfilePictureIntentService.class
             .getSimpleName();
 
+    /**
+     * Sent when a new profile picture has been successfully loaded.
+     */
     public static final String BROADCAST_NEW_PROFILE_PIC = "com.cdietz.gitprofiles.new_profile_pic";
 
+    /**
+     * The key to the String parameter containing the web URL to the picture.
+     */
     public static final String BUNDLE_STRING_ARG_FILE_URL = "fileurl";
 
+    /**
+     * The file name of the picture that is saved upon successful completion.
+     */
     public static final String PROFILE_PIC_FILE_NAME = "profile_pic.png";
 
     public PullProfilePictureIntentService() {
@@ -93,11 +102,14 @@ public class PullProfilePictureIntentService extends PullIntentService {
                     fos.close();
                 }
             } catch (IOException e) {
-                // TODO: Unable to communicate with streams at all
+                // Unable to communicate with streams at all. This will have already been caught once, so do not broadcast again.
             }
         }
     }
 
+    /**
+     * Send the broadcast that a new profile picture has been downloaded
+     */
     public void broadcastNewProfilePic() {
         final Intent broadcastIntent = new Intent(BROADCAST_NEW_PROFILE_PIC);
         sendBroadcast(broadcastIntent);

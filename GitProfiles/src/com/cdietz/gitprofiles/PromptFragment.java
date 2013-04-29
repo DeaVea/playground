@@ -11,6 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+/**
+ * This fragment handles the search bar UI.  The Activity to be attached must
+ * implement the PromptListener interface.
+ * @author Christopher Dietz
+ *
+ */
 public class PromptFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = PromptFragment.class.getSimpleName();
@@ -74,6 +80,11 @@ public class PromptFragment extends Fragment implements View.OnClickListener {
         }
     }    
     
+    /**
+     * Will set the UI to necessary requirements for loading data or not loading data.
+     * @param isLoading
+     *          Whether or not the UI should show that it is loading data or not.
+     */
     public void setLoading(boolean isLoading) {
         final View myView = getView();
         
@@ -87,6 +98,11 @@ public class PromptFragment extends Fragment implements View.OnClickListener {
     }
     
     public interface PromptListener {
+        /**
+         * The user has determined to search for a name
+         * @param name
+         *          Name to search for
+         */
         public void onSearch(String name);
     }
 }

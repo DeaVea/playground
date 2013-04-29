@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -17,17 +16,41 @@ import android.os.Bundle;
 
 import com.cdietz.gitprofiles.profile.MainProfile;
 
+/**
+ * This Service is intended to search for the main profile of a particular user.
+ * The data of the profile will be placed in to a Bundle and put in to the Extras
+ * of the broadcasted Intent upon a successful completion.
+ * @author Christopher Dietz
+ *
+ */
 public class PullProfileIntentService extends PullIntentService {
     private static final String TAG = PullProfileIntentService.class.getSimpleName();
     
+    /**
+     * Sent when a full new profile has been loaded
+     */
     public static final String BROADCAST_NEW_MAIN_PROFILE = "com.cdietz.gitprofiles.newprofile";
-    public static final String BROADCAST_BAD_PROFILE_NAME = "com.cdietz.gitprofiles.badname";
+    /**
+     * Sent when the profile was not found
+     */
     public static final String BROADCAST_NO_PROFILE_FOUND = "com.cdietz.gitprofiles.notfound";
     
+    /**
+     * The Bundle key containing information for the new MainProfile object.
+     * The Bundle will be in the extras of the broadcasted intent. 
+     */
     public static final String BROADCAST_BUNDLE_ARG_NEW_PROFILE = "newprofile";
     
+    /**
+     * Bundle key for the profile name to search for.  Put this in the extras
+     * of the Intent that starts the Service.
+     * Intent intent = new Intent(PullProfileIntentService.class);
+     */
     public static final String BUNDLE_STRING_ARG_PROFILE_NAME = "pname";
     
+    /**
+     * Base URL for the public profiles of the users.
+     */
     private static final String BASE_URL = "https://api.github.com/users/";
     
     
@@ -68,7 +91,7 @@ public class PullProfileIntentService extends PullIntentService {
             }
             
         } catch (MalformedURLException e) {
-            // TODO: URL was bad meaning profile was bad.
+           broadcastBadName();
         } catch (IOException e) {
             broadcastConnectionError();
         } catch (JSONException e) {
@@ -76,31 +99,24 @@ public class PullProfileIntentService extends PullIntentService {
         }
     }
     
+    /**
+     * Send the broadcast for a successfully retrieved profile.
+     * A Bundle containing the profile's information will be packaged in the 
+     * Intent's Extras.
+     * @param mp
+     *          The MainProfile containing the information.
+     */
     protected void broadcastNewMainProfile(MainProfile mp) {
         final Intent broadcastIntent = new Intent(BROADCAST_NEW_MAIN_PROFILE);
         broadcastIntent.putExtra(BROADCAST_BUNDLE_ARG_NEW_PROFILE, mp.toBundle());
         sendBroadcast(broadcastIntent);
     }
     
+    /**
+     * Send the broadcast that the profile was not found.
+     */
     protected void broadcastNoProfileFound() {
         final Intent broadcastIntent = new Intent(BROADCAST_NO_PROFILE_FOUND);
         sendBroadcast(broadcastIntent);
-    }
-    
-    /**
-     * Opens a working connection to the given URL.
-     * @return
-     *      Working connection or null if exceptions are thrown.
-     *          
-     */
-    protected HttpsURLConnection openInputConnection(String urlString, String acceptType) throws MalformedURLException, IOException {
-        final String acceptFormat = (acceptType != null) ? acceptType : "text/plain";
-        final URL url = new URL(urlString);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.setConnectTimeout(5000);
-        connection.setRequestProperty("Accept", acceptFormat);
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-        return connection;
     }
 }

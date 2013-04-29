@@ -20,6 +20,12 @@ import com.cdietz.gitprofiles.newtork.PullRecentActivitiesIntentService;
 import com.cdietz.gitprofiles.profile.Event;
 import com.cdietz.gitprofiles.profile.MainProfile;
 
+/**
+ * The purpose of this activity is to use the GIT webservice API to search, download, parse, and reveal
+ * public profiles on the GIT website.
+ * @author Christopher Dietz
+ *
+ */
 public class GitProfilesActivity extends FragmentActivity implements PromptListener {
     
     private EventAdapter mEA;
@@ -52,33 +58,60 @@ public class GitProfilesActivity extends FragmentActivity implements PromptListe
         unregisterReceiver(ErrorHandler);
     }
     
+    /**
+     * Updates the UI fragment with a new profile.  Will clear out the events fragment.
+     * @param mp
+     *          New profile to show
+     */
     private void updateNewProfile(MainProfile mp) {
         ((MainProfileFragment) getSupportFragmentManager().findFragmentByTag(MainProfileFragment.TAG)).setProfile(mp);
         mEA.clear();
     }
     
-    private void downloadPicture(MainProfile mp) {
-        final Intent getPic = new Intent(getApplicationContext(), PullProfilePictureIntentService.class);
-        getPic.putExtra(PullProfilePictureIntentService.BUNDLE_STRING_ARG_FILE_URL, mp.mAvatarUrl);
-        startService(getPic);
-    }
-    
-    private void downloadEvents(MainProfile mp) {
-        final Intent getEvents = new Intent(getApplicationContext(), PullRecentActivitiesIntentService.class);
-        getEvents.putExtra(PullRecentActivitiesIntentService.BUNDLE_STRING_ARG_USER_NAME, mp.mUserName);
-        startService(getEvents);
-    }
-    
+    /** 
+     * Updates the profile fragment with the newly found picture.
+     * The picture must be at the proper file location defined by PullProfilePictureIntentService.
+     */
     private void updateProfilePic() {
         final String pathName = getFilesDir().getAbsolutePath() + File.separator + PullProfilePictureIntentService.PROFILE_PIC_FILE_NAME;
         final Bitmap bm = BitmapFactory.decodeFile(pathName);
         ((MainProfileFragment) getSupportFragmentManager().findFragmentByTag(MainProfileFragment.TAG)).setProfilePic(bm);    
     }
     
+    /**
+     * Adds an event to the ListAdapter.  
+     * @param ev
+     *      New event to add.
+     */
     private void addEvent(Event ev) {
         mEA.add(ev.mType);
     }
     
+    /**
+     * Starts the download for the profile picture
+     * @param mp
+     *      The profile that is related to the picture.
+     */
+    private void downloadPicture(MainProfile mp) {
+        final Intent getPic = new Intent(getApplicationContext(), PullProfilePictureIntentService.class);
+        getPic.putExtra(PullProfilePictureIntentService.BUNDLE_STRING_ARG_FILE_URL, mp.mAvatarUrl);
+        startService(getPic);
+    }
+    
+    /**
+     * Starts the download procedure for all the events of the profile
+     * @param mp
+     *      The profile that is related to the events
+     */
+    private void downloadEvents(MainProfile mp) {
+        final Intent getEvents = new Intent(getApplicationContext(), PullRecentActivitiesIntentService.class);
+        getEvents.putExtra(PullRecentActivitiesIntentService.BUNDLE_STRING_ARG_USER_NAME, mp.mUserName);
+        startService(getEvents);
+    }
+    
+    /**
+     * This broadcast receiver is in charge of all error handling should downloads fail.
+     */
     public BroadcastReceiver ErrorHandler = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -91,10 +124,14 @@ public class GitProfilesActivity extends FragmentActivity implements PromptListe
                 Toast.makeText(context, "Profile was not found.", Toast.LENGTH_LONG).show();
             } 
             
+            // No matter what happens, the download is stopped.
             ((PromptFragment) getSupportFragmentManager().findFragmentByTag(PromptFragment.TAG)).setLoading(false);
         }
     };
     
+    /**
+     * This object is in charge of updating the UI should downloads succeed.
+     */
     public BroadcastReceiver UIUpdater = new BroadcastReceiver() {
         private MainProfile getProfile(Intent intent) {
             final Bundle newProfile = intent.getBundleExtra(PullProfileIntentService.BROADCAST_BUNDLE_ARG_NEW_PROFILE);
@@ -123,9 +160,10 @@ public class GitProfilesActivity extends FragmentActivity implements PromptListe
                     addEvent(new Event(list.getBundle(String.valueOf(i))));
                 }
                 
+                // Does not mean that download has completely stopped, but once we have events to show, we can keep
+                // updating without user intervention or knowledge.
                 ((PromptFragment) getSupportFragmentManager().findFragmentByTag(PromptFragment.TAG)).setLoading(false);
             }
-            
         }
     };
 

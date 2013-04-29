@@ -10,22 +10,51 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Build;
 
+/**
+ * IntentService meant for pulling data from a webservice.
+ * @author Chris
+ *
+ */
 public abstract class PullIntentService extends IntentService {
+    /**
+     * Sent if there was an error connecting to the server.
+     */
     public static final String BROADCAST_CONNECTION_ERROR = "com.cdietz.gitprofiles.connectionerror";
+    /**
+     * Sent if there was an error reading the data.
+     */
     public static final String BROADCAST_READ_ERROR = "com.cdietz.gitprofiles.readerror";
+    /**
+     * Sent when an invalid profile name was given
+     */
+    public static final String BROADCAST_BAD_PROFILE_NAME = "com.cdietz.gitprofiles.badname";
     
     public PullIntentService(String name) {
         super(name);
         disableConnectionReuseIfNecessary();
     }
 
+    /**
+     * Send the broadcast that there was an error connecting to the host server.
+     */
     protected void broadcastConnectionError() {
         final Intent broadcastIntent = new Intent(BROADCAST_CONNECTION_ERROR);
         sendBroadcast(broadcastIntent);
     }
     
+    /**
+     * Send the broadcast that there was an error reading the data.
+     */
     protected void broadcastReadError() {
         final Intent broadcastIntent = new Intent(BROADCAST_READ_ERROR);
+        sendBroadcast(broadcastIntent);
+    }
+    
+    /**
+     * Send the broadcast that the name was invalid.
+     */
+    protected void broadcastBadName() {
+        final Intent broadcastIntent = new Intent(BROADCAST_BAD_PROFILE_NAME);
         sendBroadcast(broadcastIntent);
     }
     

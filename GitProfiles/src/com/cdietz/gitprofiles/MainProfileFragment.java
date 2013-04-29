@@ -12,6 +12,11 @@ import android.widget.TextView;
 
 import com.cdietz.gitprofiles.profile.MainProfile;
 
+/**
+ * The MainProfile consists of general information such as name, website, and profile picture.
+ * @author Christopher Dietz
+ *
+ */
 public class MainProfileFragment extends Fragment {
     public static final String TAG = MainProfileFragment.class.getSimpleName();
     private static final String BUNDLE_SAVED_MAIN_PROFILE = "main_profile";
